@@ -1,0 +1,16 @@
+[package]
+name = "myblog-proto-rust"
+version = "0.0.7"
+authors = ["Natcha Luangaroonchai <me@nomkhonwaan.com>"]
+edition = "2018"
+description = "Compiled Protocol Buffers from myblog-proto for Rust language"
+repository = "https://github.com/nomkhonwaan/myblog-proto-rust"
+license = "MIT"
+
+[dependencies]
+prost = "0.7.0"
+prost-types = "0.7.0"
+tonic = { git = "https://github.com/hyperium/tonic", branch = "master" }
+
+[build-dependencies]
+tonic-build = { git = "https://github.com/hyperium/tonic", branch = "master" }
