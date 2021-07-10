@@ -46,7 +46,7 @@ pub struct CreateCommentResponse {
 }
 #[doc = r" Generated server implementations."]
 pub mod discussion_service_server {
-    #![allow(unused_variables, dead_code, missing_docs)]
+    #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
     #[doc = "Generated trait containing gRPC methods that should be implemented for use with DiscussionServiceServer."]
     #[async_trait]
@@ -60,13 +60,19 @@ pub mod discussion_service_server {
     #[derive(Debug)]
     pub struct DiscussionServiceServer<T: DiscussionService> {
         inner: _Inner<T>,
+        accept_compression_encodings: (),
+        send_compression_encodings: (),
     }
     struct _Inner<T>(Arc<T>);
     impl<T: DiscussionService> DiscussionServiceServer<T> {
         pub fn new(inner: T) -> Self {
             let inner = Arc::new(inner);
             let inner = _Inner(inner);
-            Self { inner }
+            Self {
+                inner,
+                accept_compression_encodings: Default::default(),
+                send_compression_encodings: Default::default(),
+            }
         }
         pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
         where
@@ -108,12 +114,17 @@ pub mod discussion_service_server {
                             Box::pin(fut)
                         }
                     }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
                         let method = CreateCommentSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec);
+                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
+                            accept_compression_encodings,
+                            send_compression_encodings,
+                        );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
                     };
@@ -133,7 +144,11 @@ pub mod discussion_service_server {
     impl<T: DiscussionService> Clone for DiscussionServiceServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
-            Self { inner }
+            Self {
+                inner,
+                accept_compression_encodings: self.accept_compression_encodings,
+                send_compression_encodings: self.send_compression_encodings,
+            }
         }
     }
     impl<T: DiscussionService> Clone for _Inner<T> {
