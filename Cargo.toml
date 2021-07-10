@@ -1,6 +1,6 @@
 [package]
 name = "myblog-proto-rust"
-version = "0.0.7"
+version = "0.0.8"
 authors = ["Natcha Luangaroonchai <me@nomkhonwaan.com>"]
 edition = "2018"
 description = "Compiled Protocol Buffers from myblog-proto for Rust language"
