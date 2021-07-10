@@ -60,8 +60,8 @@ pub mod discussion_service_server {
     #[derive(Debug)]
     pub struct DiscussionServiceServer<T: DiscussionService> {
         inner: _Inner<T>,
-        accept_compression_encodings: (),
-        send_compression_encodings: (),
+        accept_compression_encodings: EnabledCompressionEncodings,
+        send_compression_encodings: EnabledCompressionEncodings,
     }
     struct _Inner<T>(Arc<T>);
     impl<T: DiscussionService> DiscussionServiceServer<T> {
@@ -79,6 +79,16 @@ pub mod discussion_service_server {
             F: FnMut(tonic::Request<()>) -> Result<tonic::Request<()>, tonic::Status>,
         {
             InterceptedService::new(Self::new(inner), interceptor)
+        }
+        #[doc = r" Enable decompressing requests with `gzip`."]
+        pub fn accept_gzip(mut self) -> Self {
+            self.accept_compression_encodings.enable_gzip();
+            self
+        }
+        #[doc = r" Compress responses with `gzip`, if the client supports it."]
+        pub fn send_gzip(mut self) -> Self {
+            self.send_compression_encodings.enable_gzip();
+            self
         }
     }
     impl<T, B> Service<http::Request<B>> for DiscussionServiceServer<T>
