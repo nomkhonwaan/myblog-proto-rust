@@ -8,8 +8,8 @@ repository = "https://github.com/nomkhonwaan/myblog-proto-rust"
 license = "MIT"
 
 [dependencies]
-prost = "0.8"
-prost-types = "0.8"
+prost = "0.9"
+prost-types = "0.9"
 tonic = { git = "https://github.com/hyperium/tonic", branch = "master", features = ["compression"] }
 
 [build-dependencies]

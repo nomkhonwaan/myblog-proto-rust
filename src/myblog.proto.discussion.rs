@@ -76,7 +76,7 @@ pub mod discussion_service_server {
         }
         pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
         where
-            F: FnMut(tonic::Request<()>) -> Result<tonic::Request<()>, tonic::Status>,
+            F: tonic::service::Interceptor,
         {
             InterceptedService::new(Self::new(inner), interceptor)
         }
@@ -91,10 +91,10 @@ pub mod discussion_service_server {
             self
         }
     }
-    impl<T, B> Service<http::Request<B>> for DiscussionServiceServer<T>
+    impl<T, B> tonic::codegen::Service<http::Request<B>> for DiscussionServiceServer<T>
     where
         T: DiscussionService,
-        B: Body + Send + Sync + 'static,
+        B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
         type Response = http::Response<tonic::body::BoxBody>;

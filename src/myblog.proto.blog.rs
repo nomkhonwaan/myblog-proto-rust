@@ -83,6 +83,8 @@ pub struct ListPublishedPostsRequest {
     pub offset: u32,
     #[prost(uint32, tag = "2")]
     pub limit: u32,
+    #[prost(message, optional, tag = "3")]
+    pub field_mask: ::core::option::Option<::prost_types::FieldMask>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ListPublishedPostsResponse {
@@ -102,35 +104,13 @@ pub struct ListTaxonomyPublishedPostsRequest {
     pub offset: u32,
     #[prost(uint32, tag = "3")]
     pub limit: u32,
+    #[prost(message, optional, tag = "4")]
+    pub field_mask: ::core::option::Option<::prost_types::FieldMask>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ListTaxonomyPublishedPostsResponse {
     #[prost(message, repeated, tag = "1")]
     pub posts: ::prost::alloc::vec::Vec<Post>,
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListPostCommentsRequest {
-    #[prost(message, optional, tag = "1")]
-    pub post: ::core::option::Option<Post>,
-    #[prost(uint32, tag = "2")]
-    pub offset: u32,
-    #[prost(uint32, tag = "3")]
-    pub limit: u32,
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListPostCommentsResponse {
-    #[prost(message, repeated, tag = "1")]
-    pub comments: ::prost::alloc::vec::Vec<super::discussion::Comment>,
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListPostAttachmentsRequest {
-    #[prost(message, optional, tag = "1")]
-    pub post: ::core::option::Option<Post>,
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListPostAttachmentsResponse {
-    #[prost(message, repeated, tag = "1")]
-    pub attachments: ::prost::alloc::vec::Vec<super::storage::File>,
 }
 #[doc = r" Generated server implementations."]
 pub mod blog_service_server {
@@ -151,14 +131,6 @@ pub mod blog_service_server {
             &self,
             request: tonic::Request<super::ListTaxonomyPublishedPostsRequest>,
         ) -> Result<tonic::Response<super::ListTaxonomyPublishedPostsResponse>, tonic::Status>;
-        async fn list_post_comments(
-            &self,
-            request: tonic::Request<super::ListPostCommentsRequest>,
-        ) -> Result<tonic::Response<super::ListPostCommentsResponse>, tonic::Status>;
-        async fn list_post_attachments(
-            &self,
-            request: tonic::Request<super::ListPostAttachmentsRequest>,
-        ) -> Result<tonic::Response<super::ListPostAttachmentsResponse>, tonic::Status>;
     }
     #[doc = " The blog service definition."]
     #[derive(Debug)]
@@ -180,7 +152,7 @@ pub mod blog_service_server {
         }
         pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
         where
-            F: FnMut(tonic::Request<()>) -> Result<tonic::Request<()>, tonic::Status>,
+            F: tonic::service::Interceptor,
         {
             InterceptedService::new(Self::new(inner), interceptor)
         }
@@ -195,10 +167,10 @@ pub mod blog_service_server {
             self
         }
     }
-    impl<T, B> Service<http::Request<B>> for BlogServiceServer<T>
+    impl<T, B> tonic::codegen::Service<http::Request<B>> for BlogServiceServer<T>
     where
         T: BlogService,
-        B: Body + Send + Sync + 'static,
+        B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
         type Response = http::Response<tonic::body::BoxBody>;
@@ -298,73 +270,6 @@ pub mod blog_service_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = ListTaxonomyPublishedPostsSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
-                            accept_compression_encodings,
-                            send_compression_encodings,
-                        );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/myblog.proto.blog.BlogService/ListPostComments" => {
-                    #[allow(non_camel_case_types)]
-                    struct ListPostCommentsSvc<T: BlogService>(pub Arc<T>);
-                    impl<T: BlogService> tonic::server::UnaryService<super::ListPostCommentsRequest>
-                        for ListPostCommentsSvc<T>
-                    {
-                        type Response = super::ListPostCommentsResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::ListPostCommentsRequest>,
-                        ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).list_post_comments(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = ListPostCommentsSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
-                            accept_compression_encodings,
-                            send_compression_encodings,
-                        );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/myblog.proto.blog.BlogService/ListPostAttachments" => {
-                    #[allow(non_camel_case_types)]
-                    struct ListPostAttachmentsSvc<T: BlogService>(pub Arc<T>);
-                    impl<T: BlogService>
-                        tonic::server::UnaryService<super::ListPostAttachmentsRequest>
-                        for ListPostAttachmentsSvc<T>
-                    {
-                        type Response = super::ListPostAttachmentsResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::ListPostAttachmentsRequest>,
-                        ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).list_post_attachments(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = ListPostAttachmentsSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
                             accept_compression_encodings,
