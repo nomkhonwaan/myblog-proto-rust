@@ -4,20 +4,17 @@ pub struct User {
     /// Identifier of the user
     #[prost(string, tag = "1")]
     pub id: ::prost::alloc::string::String,
-    /// Auth0 generated user name
-    #[prost(string, tag = "2")]
-    pub user: ::prost::alloc::string::String,
     /// Public display name
-    #[prost(string, tag = "3")]
+    #[prost(string, tag = "2")]
     pub display_name: ::prost::alloc::string::String,
     /// Valid url string to the profile picture
-    #[prost(string, tag = "4")]
+    #[prost(string, tag = "3")]
     pub profile_picture: ::prost::alloc::string::String,
     /// Date-time that the user was created
-    #[prost(message, optional, tag = "5")]
+    #[prost(message, optional, tag = "4")]
     pub created_at: ::core::option::Option<::prost_types::Timestamp>,
     /// Date-time that the user was updated
-    #[prost(message, optional, tag = "6")]
+    #[prost(message, optional, tag = "5")]
     pub updated_at: ::core::option::Option<::prost_types::Timestamp>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
