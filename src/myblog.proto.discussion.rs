@@ -1,31 +1,31 @@
 /// A written remark expressing an opinion or reaction.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Comment {
-    /// Identifier of the comment
-    #[prost(string, tag = "1")]
+    /// Identifier of the comment 
+    #[prost(string, tag="1")]
     pub id: ::prost::alloc::string::String,
     /// Status of the comment which could be...
     /// - Published
     /// - Deleted
-    #[prost(enumeration = "CommentStatus", tag = "2")]
+    #[prost(enumeration="CommentStatus", tag="2")]
     pub status: i32,
     /// Content of the comment in plain text format
-    #[prost(string, tag = "3")]
+    #[prost(string, tag="3")]
     pub text: ::prost::alloc::string::String,
     /// A commentator
-    #[prost(message, optional, tag = "4")]
+    #[prost(message, optional, tag="4")]
     pub author: ::core::option::Option<super::auth::User>,
     /// A parent of the comment, this could be null
-    #[prost(message, optional, boxed, tag = "5")]
+    #[prost(message, optional, boxed, tag="5")]
     pub parent: ::core::option::Option<::prost::alloc::boxed::Box<Comment>>,
     /// List of comments were replied to this comment
-    #[prost(message, repeated, tag = "6")]
+    #[prost(message, repeated, tag="6")]
     pub children: ::prost::alloc::vec::Vec<Comment>,
     /// Date-time that the comment was created
-    #[prost(message, optional, tag = "7")]
+    #[prost(message, optional, tag="7")]
     pub created_at: ::core::option::Option<::prost_types::Timestamp>,
     /// Date-time that the comment was updated
-    #[prost(message, optional, tag = "8")]
+    #[prost(message, optional, tag="8")]
     pub updated_at: ::core::option::Option<::prost_types::Timestamp>,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
@@ -36,19 +36,19 @@ pub enum CommentStatus {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateCommentRequest {
-    #[prost(message, optional, tag = "1")]
+    #[prost(message, optional, tag="1")]
     pub comment: ::core::option::Option<Comment>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateCommentResponse {
-    #[prost(message, optional, tag = "1")]
+    #[prost(message, optional, tag="1")]
     pub comment: ::core::option::Option<Comment>,
 }
-#[doc = r" Generated server implementations."]
+/// Generated server implementations.
 pub mod discussion_service_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    #[doc = "Generated trait containing gRPC methods that should be implemented for use with DiscussionServiceServer."]
+    ///Generated trait containing gRPC methods that should be implemented for use with DiscussionServiceServer.
     #[async_trait]
     pub trait DiscussionService: Send + Sync + 'static {
         async fn create_comment(
@@ -56,7 +56,7 @@ pub mod discussion_service_server {
             request: tonic::Request<super::CreateCommentRequest>,
         ) -> Result<tonic::Response<super::CreateCommentResponse>, tonic::Status>;
     }
-    #[doc = " The discussion service definition."]
+    /// The discussion service definition.
     #[derive(Debug)]
     pub struct DiscussionServiceServer<T: DiscussionService> {
         inner: _Inner<T>,
@@ -66,7 +66,9 @@ pub mod discussion_service_server {
     struct _Inner<T>(Arc<T>);
     impl<T: DiscussionService> DiscussionServiceServer<T> {
         pub fn new(inner: T) -> Self {
-            let inner = Arc::new(inner);
+            Self::from_arc(Arc::new(inner))
+        }
+        pub fn from_arc(inner: Arc<T>) -> Self {
             let inner = _Inner(inner);
             Self {
                 inner,
@@ -74,18 +76,23 @@ pub mod discussion_service_server {
                 send_compression_encodings: Default::default(),
             }
         }
-        pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
+        pub fn with_interceptor<F>(
+            inner: T,
+            interceptor: F,
+        ) -> InterceptedService<Self, F>
         where
             F: tonic::service::Interceptor,
         {
             InterceptedService::new(Self::new(inner), interceptor)
         }
-        #[doc = r" Enable decompressing requests with `gzip`."]
+        /// Enable decompressing requests with `gzip`.
+        #[must_use]
         pub fn accept_gzip(mut self) -> Self {
             self.accept_compression_encodings.enable_gzip();
             self
         }
-        #[doc = r" Compress responses with `gzip`, if the client supports it."]
+        /// Compress responses with `gzip`, if the client supports it.
+        #[must_use]
         pub fn send_gzip(mut self) -> Self {
             self.send_compression_encodings.enable_gzip();
             self
@@ -98,9 +105,12 @@ pub mod discussion_service_server {
         B::Error: Into<StdError> + Send + 'static,
     {
         type Response = http::Response<tonic::body::BoxBody>;
-        type Error = Never;
+        type Error = std::convert::Infallible;
         type Future = BoxFuture<Self::Response, Self::Error>;
-        fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+        fn poll_ready(
+            &mut self,
+            _cx: &mut Context<'_>,
+        ) -> Poll<Result<(), Self::Error>> {
             Poll::Ready(Ok(()))
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
@@ -109,18 +119,23 @@ pub mod discussion_service_server {
                 "/myblog.proto.discussion.DiscussionService/CreateComment" => {
                     #[allow(non_camel_case_types)]
                     struct CreateCommentSvc<T: DiscussionService>(pub Arc<T>);
-                    impl<T: DiscussionService>
-                        tonic::server::UnaryService<super::CreateCommentRequest>
-                        for CreateCommentSvc<T>
-                    {
+                    impl<
+                        T: DiscussionService,
+                    > tonic::server::UnaryService<super::CreateCommentRequest>
+                    for CreateCommentSvc<T> {
                         type Response = super::CreateCommentResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::CreateCommentRequest>,
                         ) -> Self::Future {
                             let inner = self.0.clone();
-                            let fut = async move { (*inner).create_comment(request).await };
+                            let fut = async move {
+                                (*inner).create_comment(request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -131,23 +146,28 @@ pub mod discussion_service_server {
                         let inner = inner.0;
                         let method = CreateCommentSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
-                            accept_compression_encodings,
-                            send_compression_encodings,
-                        );
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
                     };
                     Box::pin(fut)
                 }
-                _ => Box::pin(async move {
-                    Ok(http::Response::builder()
-                        .status(200)
-                        .header("grpc-status", "12")
-                        .header("content-type", "application/grpc")
-                        .body(empty_body())
-                        .unwrap())
-                }),
+                _ => {
+                    Box::pin(async move {
+                        Ok(
+                            http::Response::builder()
+                                .status(200)
+                                .header("grpc-status", "12")
+                                .header("content-type", "application/grpc")
+                                .body(empty_body())
+                                .unwrap(),
+                        )
+                    })
+                }
             }
         }
     }
@@ -171,7 +191,8 @@ pub mod discussion_service_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: DiscussionService> tonic::transport::NamedService for DiscussionServiceServer<T> {
+    impl<T: DiscussionService> tonic::transport::NamedService
+    for DiscussionServiceServer<T> {
         const NAME: &'static str = "myblog.proto.discussion.DiscussionService";
     }
 }

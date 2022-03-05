@@ -2,36 +2,36 @@
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct User {
     /// Identifier of the user
-    #[prost(string, tag = "1")]
+    #[prost(string, tag="1")]
     pub id: ::prost::alloc::string::String,
     /// Public display name
-    #[prost(string, tag = "2")]
+    #[prost(string, tag="2")]
     pub display_name: ::prost::alloc::string::String,
     /// Valid url string to the profile picture
-    #[prost(string, tag = "3")]
+    #[prost(string, tag="3")]
     pub profile_picture: ::prost::alloc::string::String,
     /// Date-time that the user was created
-    #[prost(message, optional, tag = "4")]
+    #[prost(message, optional, tag="4")]
     pub created_at: ::core::option::Option<::prost_types::Timestamp>,
     /// Date-time that the user was updated
-    #[prost(message, optional, tag = "5")]
+    #[prost(message, optional, tag="5")]
     pub updated_at: ::core::option::Option<::prost_types::Timestamp>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateUserRequest {
-    #[prost(message, optional, tag = "1")]
+    #[prost(message, optional, tag="1")]
     pub user: ::core::option::Option<User>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateUserResponse {
-    #[prost(message, optional, tag = "1")]
+    #[prost(message, optional, tag="1")]
     pub user: ::core::option::Option<User>,
 }
-#[doc = r" Generated server implementations."]
+/// Generated server implementations.
 pub mod auth_service_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    #[doc = "Generated trait containing gRPC methods that should be implemented for use with AuthServiceServer."]
+    ///Generated trait containing gRPC methods that should be implemented for use with AuthServiceServer.
     #[async_trait]
     pub trait AuthService: Send + Sync + 'static {
         async fn create_user(
@@ -39,7 +39,7 @@ pub mod auth_service_server {
             request: tonic::Request<super::CreateUserRequest>,
         ) -> Result<tonic::Response<super::CreateUserResponse>, tonic::Status>;
     }
-    #[doc = " The authentication and authorization services definition."]
+    /// The authentication and authorization services definition.
     #[derive(Debug)]
     pub struct AuthServiceServer<T: AuthService> {
         inner: _Inner<T>,
@@ -49,7 +49,9 @@ pub mod auth_service_server {
     struct _Inner<T>(Arc<T>);
     impl<T: AuthService> AuthServiceServer<T> {
         pub fn new(inner: T) -> Self {
-            let inner = Arc::new(inner);
+            Self::from_arc(Arc::new(inner))
+        }
+        pub fn from_arc(inner: Arc<T>) -> Self {
             let inner = _Inner(inner);
             Self {
                 inner,
@@ -57,18 +59,23 @@ pub mod auth_service_server {
                 send_compression_encodings: Default::default(),
             }
         }
-        pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
+        pub fn with_interceptor<F>(
+            inner: T,
+            interceptor: F,
+        ) -> InterceptedService<Self, F>
         where
             F: tonic::service::Interceptor,
         {
             InterceptedService::new(Self::new(inner), interceptor)
         }
-        #[doc = r" Enable decompressing requests with `gzip`."]
+        /// Enable decompressing requests with `gzip`.
+        #[must_use]
         pub fn accept_gzip(mut self) -> Self {
             self.accept_compression_encodings.enable_gzip();
             self
         }
-        #[doc = r" Compress responses with `gzip`, if the client supports it."]
+        /// Compress responses with `gzip`, if the client supports it.
+        #[must_use]
         pub fn send_gzip(mut self) -> Self {
             self.send_compression_encodings.enable_gzip();
             self
@@ -81,9 +88,12 @@ pub mod auth_service_server {
         B::Error: Into<StdError> + Send + 'static,
     {
         type Response = http::Response<tonic::body::BoxBody>;
-        type Error = Never;
+        type Error = std::convert::Infallible;
         type Future = BoxFuture<Self::Response, Self::Error>;
-        fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+        fn poll_ready(
+            &mut self,
+            _cx: &mut Context<'_>,
+        ) -> Poll<Result<(), Self::Error>> {
             Poll::Ready(Ok(()))
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
@@ -92,9 +102,15 @@ pub mod auth_service_server {
                 "/myblog.proto.auth.AuthService/CreateUser" => {
                     #[allow(non_camel_case_types)]
                     struct CreateUserSvc<T: AuthService>(pub Arc<T>);
-                    impl<T: AuthService> tonic::server::UnaryService<super::CreateUserRequest> for CreateUserSvc<T> {
+                    impl<
+                        T: AuthService,
+                    > tonic::server::UnaryService<super::CreateUserRequest>
+                    for CreateUserSvc<T> {
                         type Response = super::CreateUserResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::CreateUserRequest>,
@@ -111,23 +127,28 @@ pub mod auth_service_server {
                         let inner = inner.0;
                         let method = CreateUserSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
-                            accept_compression_encodings,
-                            send_compression_encodings,
-                        );
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
                     };
                     Box::pin(fut)
                 }
-                _ => Box::pin(async move {
-                    Ok(http::Response::builder()
-                        .status(200)
-                        .header("grpc-status", "12")
-                        .header("content-type", "application/grpc")
-                        .body(empty_body())
-                        .unwrap())
-                }),
+                _ => {
+                    Box::pin(async move {
+                        Ok(
+                            http::Response::builder()
+                                .status(200)
+                                .header("grpc-status", "12")
+                                .header("content-type", "application/grpc")
+                                .body(empty_body())
+                                .unwrap(),
+                        )
+                    })
+                }
             }
         }
     }
