@@ -15,9 +15,10 @@ pub struct Comment {
     /// A commentator
     #[prost(message, optional, tag="4")]
     pub author: ::core::option::Option<super::auth::User>,
-    /// A parent of the comment, this could be null
-    #[prost(message, optional, boxed, tag="5")]
-    pub parent: ::core::option::Option<::prost::alloc::boxed::Box<Comment>>,
+    /// Identifier of the parent comment,
+    /// this could be null if the comment is not belonging to the other
+    #[prost(string, tag="5")]
+    pub parent_id: ::prost::alloc::string::String,
     /// List of comments were replied to this comment
     #[prost(message, repeated, tag="6")]
     pub children: ::prost::alloc::vec::Vec<Comment>,
@@ -44,6 +45,52 @@ pub struct CreateCommentResponse {
     #[prost(message, optional, tag="1")]
     pub comment: ::core::option::Option<Comment>,
 }
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListPublishedCommentsRequest {
+    #[prost(uint32, tag="1")]
+    pub offset: u32,
+    #[prost(uint32, tag="2")]
+    pub limit: u32,
+    /// Identifier of the parent comment or post that the comment belonging to
+    #[prost(string, tag="3")]
+    pub parent_id: ::prost::alloc::string::String,
+    #[prost(message, optional, tag="4")]
+    pub field_mask: ::core::option::Option<::prost_types::FieldMask>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListPublishedCommentsResponse {
+    #[prost(message, repeated, tag="1")]
+    pub comments: ::prost::alloc::vec::Vec<Comment>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetCommentRequest {
+    #[prost(string, tag="1")]
+    pub comment_id: ::prost::alloc::string::String,
+    #[prost(message, optional, tag="2")]
+    pub field_mask: ::core::option::Option<::prost_types::FieldMask>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetCommentResponse {
+    #[prost(message, optional, tag="1")]
+    pub comment: ::core::option::Option<Comment>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateCommentRequest {
+    #[prost(message, optional, tag="1")]
+    pub comment: ::core::option::Option<Comment>,
+    #[prost(message, optional, tag="2")]
+    pub update_mask: ::core::option::Option<::prost_types::FieldMask>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateCommentResponse {
+    #[prost(message, optional, tag="1")]
+    pub comment: ::core::option::Option<Comment>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeleteCommentRequest {
+    #[prost(string, tag="1")]
+    pub comment_id: ::prost::alloc::string::String,
+}
 /// Generated server implementations.
 pub mod discussion_service_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
@@ -55,6 +102,25 @@ pub mod discussion_service_server {
             &self,
             request: tonic::Request<super::CreateCommentRequest>,
         ) -> Result<tonic::Response<super::CreateCommentResponse>, tonic::Status>;
+        async fn list_published_comments(
+            &self,
+            request: tonic::Request<super::ListPublishedCommentsRequest>,
+        ) -> Result<
+                tonic::Response<super::ListPublishedCommentsResponse>,
+                tonic::Status,
+            >;
+        async fn get_comment(
+            &self,
+            request: tonic::Request<super::GetCommentRequest>,
+        ) -> Result<tonic::Response<super::GetCommentResponse>, tonic::Status>;
+        async fn update_comment(
+            &self,
+            request: tonic::Request<super::UpdateCommentRequest>,
+        ) -> Result<tonic::Response<super::UpdateCommentResponse>, tonic::Status>;
+        async fn delete_comment(
+            &self,
+            request: tonic::Request<super::DeleteCommentRequest>,
+        ) -> Result<tonic::Response<()>, tonic::Status>;
     }
     /// The discussion service definition.
     #[derive(Debug)]
@@ -145,6 +211,164 @@ pub mod discussion_service_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = CreateCommentSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/myblog.proto.discussion.DiscussionService/ListPublishedComments" => {
+                    #[allow(non_camel_case_types)]
+                    struct ListPublishedCommentsSvc<T: DiscussionService>(pub Arc<T>);
+                    impl<
+                        T: DiscussionService,
+                    > tonic::server::UnaryService<super::ListPublishedCommentsRequest>
+                    for ListPublishedCommentsSvc<T> {
+                        type Response = super::ListPublishedCommentsResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ListPublishedCommentsRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).list_published_comments(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ListPublishedCommentsSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/myblog.proto.discussion.DiscussionService/GetComment" => {
+                    #[allow(non_camel_case_types)]
+                    struct GetCommentSvc<T: DiscussionService>(pub Arc<T>);
+                    impl<
+                        T: DiscussionService,
+                    > tonic::server::UnaryService<super::GetCommentRequest>
+                    for GetCommentSvc<T> {
+                        type Response = super::GetCommentResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::GetCommentRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).get_comment(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = GetCommentSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/myblog.proto.discussion.DiscussionService/UpdateComment" => {
+                    #[allow(non_camel_case_types)]
+                    struct UpdateCommentSvc<T: DiscussionService>(pub Arc<T>);
+                    impl<
+                        T: DiscussionService,
+                    > tonic::server::UnaryService<super::UpdateCommentRequest>
+                    for UpdateCommentSvc<T> {
+                        type Response = super::UpdateCommentResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::UpdateCommentRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).update_comment(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = UpdateCommentSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/myblog.proto.discussion.DiscussionService/DeleteComment" => {
+                    #[allow(non_camel_case_types)]
+                    struct DeleteCommentSvc<T: DiscussionService>(pub Arc<T>);
+                    impl<
+                        T: DiscussionService,
+                    > tonic::server::UnaryService<super::DeleteCommentRequest>
+                    for DeleteCommentSvc<T> {
+                        type Response = ();
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DeleteCommentRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move {
+                                (*inner).delete_comment(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = DeleteCommentSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
